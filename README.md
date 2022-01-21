@@ -20,6 +20,8 @@ yarn run startruby
 
 Alternatively, start the client with `yarn run vite`, then start the JS server with `node server/index.js` or the Ruby server with `ruby server/server.rb`.
 
+### Caveats
+
 There are some differences between the Ruby server's behavior and the JS server.
 
 - Most notably, the JS server runs multiple "setTimeout" waits at the same time, so `secondVerse` arrives in the middle of the stream of letters. Ruby, on the other hand, runs one `sleep` at a time, so letters must pause while `secondVerse` is sleeping. This could probably be improved by `use GraphQL::Dataloader, nonblocking: true`, and re-working those fields to use Dataloader sources.
