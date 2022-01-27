@@ -35,7 +35,7 @@ const LocationsList = () => {
   });
 
   const { data } = result;
-  console.log("now", Date.now())
+  console.log("now", Date.now(), data && data.alphabet)
   return (
     <div>
       {data && (

@@ -1,4 +1,4 @@
-This is a copy of `urql`'s stream example, with the server ported to ruby (`server/server.rb`)
+This is a copy of `urql`'s stream example, with the server ported to Sinatra (`server/server.rb`) and Rails `stream_server/`
 
 Install dependencies:
 
@@ -12,10 +12,18 @@ To start the javascript server:
 yarn run start
 ```
 
-Or, to start the Ruby server:
+Or, to start the Sinatra server:
 
 ```
 yarn run startruby
+```
+
+Or, to start the Rails server:
+
+```
+cd stream_server
+rails server
+# Run the JS client separately as described below
 ```
 
 Alternatively, start the client with `yarn run vite`, then start the JS server with `node server/index.js` or the Ruby server with `ruby server/server.rb`.

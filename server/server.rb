@@ -1,8 +1,8 @@
 require "bundler/inline"
 
 gemfile do
-  gem "graphql", "1.13.6", path: "~/code/graphql-ruby"
-  gem "graphql-pro", "1.21.1", path: "~/code/graphql-pro"
+  gem "graphql", "1.13.6"
+  gem "graphql-pro", "1.21.1"
   gem "sinatra"
   gem "sinatra-contrib"
   gem "sinatra-cross_origin"
@@ -16,7 +16,7 @@ class Schema < GraphQL::Schema
     field :char, String
 
     def char
-      sleep 0.5
+      # sleep 0.5
       object[:char]
     end
   end
@@ -31,7 +31,7 @@ class Schema < GraphQL::Schema
     field :second_verse, String
 
     def second_verse
-      sleep 5
+      # sleep 5
       "Next time won't you sing with me"
     end
   end
@@ -120,6 +120,7 @@ class App < Sinatra::Base
           puts Time.now.to_i
           puts text.inspect
           out << text
+          sleep 0.1
         end
       end
     else
