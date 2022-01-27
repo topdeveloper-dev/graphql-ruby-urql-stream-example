@@ -98,28 +98,8 @@ class App < Sinatra::Base
       response.headers["Content-Type"] = "multipart/mixed; boundary=\"-\""
       # response.headers["Transfer-Encoding"] = "chunked"
       stream do |out|
-        # It seems like urql expects the first flush of data to include only this boundary marker:
-        out << "---"
-
-        deferred.deferrals.each_with_index do |deferral, idx|
-          # This is a lot of fussing to try to replicate urql's format _exactly_ --
-          # I think it's all unnecessary though, the extra `---` above was what made it start working.
-          payload = {}
-          payload["data"] = deferral.data
-          if idx > 0
-            payload["path"] = deferral.path
-          end
-          payload["hasNext"] = deferral.has_next?
-          text = [
-              "",
-              "Content-Type: application/json; charset=utf-8",
-              "",
-              JSON.dump(payload),
-              deferral.has_next? ? "---" : ""
-          ].join("\r\n")
-          puts Time.now.to_i
-          puts text.inspect
-          out << text
+        deferred.deferrals.each do |deferral|
+          out << deferral.to_http_multipart
           sleep 0.1
         end
       end
