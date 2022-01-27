@@ -41,12 +41,3 @@ There are some differences between the Ruby server's behavior and the JS server.
 
   Maybe I'm wrong -- is there an advantage in a Ruby/Rails context to supporting pauses _between_ list items? If so, I bet the use of `.each` in `lib/graphql/execution/interpreter/runtime.rb` could be expanded to properly support Ruby enumerators.
 - Weirdly, Sinatra doesn't work right with this example when you set `Transfer-Encoding: chunked` in Ruby -- can't figure out why.
-- This took me forever to figure out:
-
-  Ruby sends a leading boundary (`---`) as part of the first patch. This is in the spec: there should be a boundary between the preamble part (with nothing in it, afaict) and the first patch.
-
-  At first, running the demo with Ruby server always looked "one patch behind." That is, the server would send the first patch, but nothing would render. Then it would send the second patch, and the first patch would render, then send the third patch, and the second patch would render. Weird!
-
-  I was fussing and fussing over trying to make the Ruby server _exactly_ like the Javascript one. Finally, I noticed that the JS server has a `res.write("---")` before any patches, so I added that to the Ruby server (and removed that boundary from the first patch) and now it seems to work right.
-
-  So it seems like `urql` assumes that each flush of data from the server will contain exactly one patch.
