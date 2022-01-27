@@ -1,4 +1,13 @@
 class GraphqlController < ApplicationController
+  # Inject a sleep to make the deferrals visible on the client:
+  class GraphQL::Pro::Defer::Deferral
+    alias :old_to_http_multipart :to_http_multipart
+    def to_http_multipart(*args, **kwargs)
+      sleep 0.1
+      old_to_http_multipart(*args, **kwargs)
+    end
+  end
+
   include ActionController::Live
   # If accessing from outside this domain, nullify the session
   # This allows for outside API access while preventing CSRF attacks,
@@ -21,33 +30,7 @@ class GraphqlController < ApplicationController
       # like https://github.com/FormidableLabs/urql/blob/main/examples/with-defer-stream-directives/server/index.js
       response.headers["Content-Type"] = "multipart/mixed; boundary=\"-\""
       response.headers["Connection"] = "keep-alive"
-      # urql expects a leading boundary marker:
-      response.stream.write("---")
-      deferred.deferrals.each_with_index do |deferral, idx|
-        payload = {}
-        payload["data"] = deferral.data
-        if idx > 0
-          payload["path"] = deferral.path
-        end
-        payload["hasNext"] = deferral.has_next?
-
-        patch = [
-          "",
-          "Content-Type: application/json; charset=utf-8",
-          "",
-          JSON.dump(payload)
-        ]
-        patch << "---" if deferral.has_next?
-        patch_str = patch.join("\r\n")
-
-        sleep 0.1
-        puts Time.now.to_f
-        puts patch_str.inspect
-
-        response.stream.write(patch_str)
-      end
-
-      response.stream.write("\r\n-----")
+      deferred.stream_http_multipart(response)
     else
       # Return a plain, non-deferred result
       render json: result
