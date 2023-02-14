@@ -2,9 +2,7 @@ import React from 'react';
 import {
   createClient,
   Provider,
-  dedupExchange,
-  debugExchange,
-  fetchExchange,
+  d
 } from 'urql';
 
 import { cacheExchange } from '@urql/exchange-graphcache';
