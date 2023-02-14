@@ -2,8 +2,7 @@ import React from 'react';
 import {
   createClient,
   Provider,
-  dedupExchange,
-  debugExchange,
+  d
   fetchExchange,
 } from 'urql';
 
